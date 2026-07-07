@@ -2,9 +2,13 @@ const mysql = require("mysql2");
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 4000,
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "Keerthi@123",
   database: process.env.DB_NAME || "task_manager",
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 db.connect((err) => {

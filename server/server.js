@@ -13,25 +13,36 @@ const taskRoutes = require("./routes/taskRoutes");
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  },
-});
+// Allowed Frontend URLs
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://task-management-frontend-black-gamma.vercel.app",
+];
 
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
-// Attach io to req so controllers can emit events
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  },
+});
+
+// Attach io to req
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
@@ -39,7 +50,7 @@ app.get("/", (req, res) => {
   res.send("Task Management API is Running 🚀");
 });
 
-// Socket.io Connection Logic
+// Socket
 io.on("connection", (socket) => {
   console.log(`🔌 Client connected: ${socket.id}`);
 
@@ -58,5 +69,5 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

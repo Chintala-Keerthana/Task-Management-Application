@@ -16,7 +16,7 @@ const server = http.createServer(app);
 // Allowed Frontend URLs
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://task-management-frontend-black-gamma.vercel.app",
+  "https://keerthi-task-manager.vercel.app",
 ];
 
 app.use(
